@@ -11,45 +11,13 @@ router.get('/', function(req, res, next) {
 
 
 
-router.post('/push_QA', function(req, res, next) {
 
-	
-
-
-});
-
-
-
-
-router.get('/extract', function(req, res, next) {
-
-
-	fs.readFile('./src_small.json', 'utf8', function (err, text) {
-
-		//global_text_json = JSON.parse(text);
-		console.log(text);
-		/*
-		var kaigyou = "\n";
-		var regExp =  new RegExp( kaigyou, "g" ) ;
-		var replaced_text = text.replace(regExp, "");
-		*/
-		global_text_array = JSON.parse(text);
-		console.log(global_text_array);
-		res.send(global_text_array);
-
-	});
-});
-
-
-
-router.get('/extract2', function(req, res, next) {
+router.get('/initial', function(req, res, next) {
 	fs.readFile('./src_adjust.json', 'utf8', function (err, text) {
-
 		if(err){
 			console.log(err);
 			res.send(err);
 		}else{
-
 			global_text_array = JSON.parse(text);
 			res.send(global_text_array);
 		}
@@ -59,10 +27,40 @@ router.get('/extract2', function(req, res, next) {
 
 
 
-router.get('/convert2', function(req, res, next) {
+router.post('/push_QA', function(req, res, next) {
 
 	if(!global_text_array || !Array.isArray(global_text_array) || global_text_array.length == 0){
-		for(var i=0; i< global_text_array.length; i++)
+		res.send("not yet initialized");
+		return;
+	}
+	if(!req.body.quetion || !req.body.answer_title || !req.body.answer_body){
+		res.send("data is not sufficient");
+		return;
+	}
+	push_data_to_global_text_array(req, res, next, req.body.quetion, req.body.answer_title,req.body.answer_body );
+
+});
+
+
+function push_data_to_global_text_array(req, res, next, quetion_val , answer_title_val , answer_body_val){
+
+	var obj = {
+		Question: quetion_val,
+		Answer: {
+			body: answer_body_val,
+			title: answer_title_val
+		}
+	}
+	global_text_array.push(obj);
+	res.send(obj)
+}
+
+
+
+
+router.get('/output', function(req, res, next) {
+
+	if(!global_text_array || !Array.isArray(global_text_array) || global_text_array.length == 0){
 		res.send("data is not yet extracted");
 		return;
 	}
@@ -121,7 +119,7 @@ function output_csv(req, res, next){
 }
 
 
-
+/*
 
 router.get('/convert', function(req, res, next) {
 
@@ -145,7 +143,7 @@ router.get('/convert', function(req, res, next) {
 	    }
 	});
 });
-
+*/
 
 
 router.get('/sss', function(req, res, next) {

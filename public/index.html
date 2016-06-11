@@ -1,0 +1,76 @@
+<script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+
+
+<input type="button" value="init" onClick="init()">
+
+
+
+
+<div>
+Question
+<textarea id="Question"></textarea>
+</div>
+
+<br>
+
+<div>
+Answer title
+<textarea  id="Answer_title"></textarea>
+Answer body
+<textarea id="Answer_body"></textarea>
+
+
+<input type="button" value="send" onClick="send_data()">
+</div>
+
+
+<input type="button" value="output to file" onClick="output_file()">
+
+
+<script>
+
+function init(){
+	$.get("/initial",
+	  function(data){
+	    console.log(data);
+	  }
+	 );
+}
+
+function output_file(){
+	$.get("/output",
+	  function(data){
+	    console.log(data);
+	  }
+	 );
+}
+
+
+
+function send_data(){
+	var question_element = document.getElementById ('Question');
+	var question_val = question_element.value
+
+	var answer_title_element = document.getElementById ('Answer_title');
+	var answer_title_val = answer_title_element.value
+
+	var answer_body_element = document.getElementById ('Answer_body');
+	var answer_body_val = answer_body_element.value
+
+
+	var qa_obj = {
+		quetion: question_val,
+		answer_title: answer_title_val,
+		answer_body: answer_body_val
+	}
+
+	$.post("/push_QA",
+	  qa_obj,
+	  function(data){
+	    //リクエストが成功した際に実行する関数
+	    console.log(data);
+	  }
+	);
+}
+
+</script>
